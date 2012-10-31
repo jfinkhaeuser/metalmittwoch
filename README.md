@@ -3,6 +3,8 @@ metalmittwoch
 
 Playlist for #metalmittwoch on Google+
 
+https://plus.google.com/s/%23metalmittwoch
+
 
 structure
 =========
