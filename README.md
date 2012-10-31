@@ -32,16 +32,19 @@ at the beginning of the file contain some metadata about the event.
 
 What follows are lines indented by two spaces with the following format (all
 separators are single spaces):
+```
   ## artist - song title
+```
 
 For example, the first #metalmittwoch file looks like this:
 
-  #metalmittwoch #1 (Death Metal theme [with exceptions])
-    01 Pantera - This love
-    02 Tiamat - The Sleeping Beauty
-    03 Malevolent Creation - Dominated Resurgency
-    04 Cancer - Death Shall Rise
-
+```
+#metalmittwoch #1 (Death Metal theme [with exceptions])
+  01 Pantera - This love
+  02 Tiamat - The Sleeping Beauty
+  03 Malevolent Creation - Dominated Resurgency
+  04 Cancer - Death Shall Rise
+```
 
 playlists
 ---------
