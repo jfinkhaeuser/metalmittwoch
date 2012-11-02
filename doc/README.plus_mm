@@ -1,0 +1,20 @@
+plus_mm - Google+ Metal Mittwoch Playlist Extractor
+--------------------------------------------------------------------
+
+In order to be able to use plus_mm, you have to follow a few simple
+steps which will give you access to the Google's API.
+
+  1) Go to http://code.google.com/apis/console
+  2) Change to API Access and click on the 'Create another client ID'
+     button.
+  3) Choose "Installed Application" in Application Type and "Other" in
+     Installed application type and finally create the client id.
+  4) Download JSON of your newly created Client ID and store it to
+     the plus_mm 'etc/' directory.
+  5) Call plus_mm like
+
+       plus_mm -d YYYY-MM-DD -i ISSUENUMBER -t THEMEOFMETALMITTWOCH
+
+  6) On first run you will get a link, which needs to be visited in
+     your browser. Copy the given token to the command line and
+     hit return.
