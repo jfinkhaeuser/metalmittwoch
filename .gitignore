@@ -1,5 +1,5 @@
 *~
-*.swp
+*.sw*
 *.log
 etc/client_secrets.json
 etc/api_token.dat
