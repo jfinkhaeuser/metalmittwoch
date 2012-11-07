@@ -45,11 +45,6 @@ my $config = {
   playlist_dir => "$FindBin::Bin/metalmittwoch",
   client_secrets => "$FindBin::Bin/etc/client_secrets.json",
   api_token => "$FindBin::Bin/etc/api_token.dat",
-  contributors => [
-    '112287746325789895446', # jfinkhaeuser
-    '112251581633251844406', # eremit
-    '116270034687033665093', # josephine scott
-  ]
 };
 
 # [create etc if not present] --------------------------------------
@@ -61,11 +56,26 @@ my $service = $api_client->build('plus', 'v1');
 my $oauth2 = OAuth2::Client->new_from_client_secrets($config->{client_secrets}, $service->{auth_doc});
 my $api_token = get_token($config->{api_token}, $oauth2);
 
-my $timelines = merge_timelines(
-  [ map {
-    $service->activities->list(body => {userId => $_, collection => 'public'})->execute({auth_driver => $oauth2});
-  } @{ $config->{contributors} } ]
-);
+
+my $timelines = [];
+my $nextPageToken = undef;
+my $result = undef;
+do {
+  if (defined $nextPageToken) {
+    $result = $service->activities->search(body => { query => '#metalmittwoch', maxResults => 20, pageToken => $nextPageToken })->execute({auth_driver => $oauth2});
+  }
+  else {
+    $result = $service->activities->search(body => { query => '#metalmittwoch', maxResults => 20 })->execute({auth_driver => $oauth2});
+  }
+  $nextPageToken = $result->{nextPageToken};
+
+  $result = filter_results($result->{items});
+  if (scalar @{ $result }) {
+    push $timelines, $result;
+  }
+} while (scalar @{ $result });
+
+$timelines = merge_timelines($timelines);
 
 # [output processing] ----------------------------------------------
 my $mm_path = $config->{playlist_dir} . '/' . $opts{d} . '/';
@@ -109,34 +119,49 @@ sub help {
   exit;
 }
 
+sub filter_results {
+  my $results = shift;
+  return unless scalar @{ $results };
+
+  my $date = $opts{d};
+  my $entries = [];
+
+  foreach my $item (@{ $results }) {
+    next unless $item->{object};
+    next unless $item->{published} =~ /^$date/;
+    next unless $item->{object}{content} && $item->{object}{content} =~ /#metalmittwoch/;
+    next unless $item->{object}{attachments} &&
+      scalar @{ $item->{object}{attachments} };
+    # for simplicity we assume that there is always only ONE attachment
+    next unless $item->{object}{attachments}[0]{objectType} eq 'video' &&
+      $item->{object}{attachments}[0]{url} =~ /youtube\.com/;
+
+    push @{ $entries }, {
+      title       => $item->{object}{attachments}[0]{displayName},
+      youtube     => $item->{object}{attachments}[0]{url},
+      contributor => $item->{actor}{displayName},
+      published   => $item->{published}
+    };
+  }
+
+  return $entries;
+}
+
 sub merge_timelines {
   my $timelines = shift;
   return unless scalar @{ $timelines };
-  
+
   my $date = $opts{d};
   my $entries = [];
+
   foreach my $timeline (@{ $timelines }) {
-    if ($timeline && $timeline->{items} && scalar @{ $timeline->{items} }) {
-      foreach my $item (@{ $timeline->{items} }) {
-        next unless $item->{title} && $item->{title} =~ /#metalmittwoch/;
-        next unless $item->{published} =~ /^$date/;
-        next unless $item->{object};
-        next unless $item->{object}{attachments} &&
-          scalar @{ $item->{object}{attachments} };
-        # for simplicity we assume that there is always only ONE attachment
-        next unless $item->{object}{attachments}[0]{objectType} eq 'video' &&
-          $item->{object}{attachments}[0]{url} =~ /youtube\.com/;
-        
-        push @{ $entries }, {
-          title       => $item->{object}{attachments}[0]{displayName},
-          youtube     => $item->{object}{attachments}[0]{url},
-          contributor => $item->{actor}{displayName},
-          published   => $item->{published}
-        };
+    if ($timeline && scalar @{ $timeline }) {
+      foreach my $item (@{ $timeline }) {
+        push @{ $entries }, $item;
       }
     }
   }
-  
+
   return $entries;
 }
 
