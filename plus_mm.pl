@@ -60,6 +60,7 @@ my $api_token = get_token($config->{api_token}, $oauth2);
 my $timelines = [];
 my $nextPageToken = undef;
 my $result = undef;
+my $skipped = 0;
 do {
   if (defined $nextPageToken) {
     $result = $service->activities->search(body => { query => '#metalmittwoch', maxResults => 20, pageToken => $nextPageToken })->execute({auth_driver => $oauth2});
@@ -69,11 +70,11 @@ do {
   }
   $nextPageToken = $result->{nextPageToken};
 
-  $result = filter_results($result->{items});
+  ($result, $skipped) = filter_results($result->{items});
   if (scalar @{ $result }) {
     push $timelines, $result;
   }
-} while (scalar @{ $result });
+} while (scalar @{ $result } || $skipped);
 
 $timelines = merge_timelines($timelines);
 
@@ -123,12 +124,41 @@ sub filter_results {
   my $results = shift;
   return unless scalar @{ $results };
 
-  my $date = $opts{d};
   my $entries = [];
 
+  my $skipped = 0;
+
+  use DateTime;
+  use DateTime::Format::RFC3339;
+  use DateTime::Format::Builder;
+
+  my $strdate = $opts{d};
+  my $date = DateTime::Format::Builder->create_parser( strptime => '%Y-%m-%d' );
+  $date = $date->parse( 'DateTime::Format::Builder', $strdate );
+
+  my $rfc_parser = DateTime::Format::RFC3339->new;
+
   foreach my $item (@{ $results }) {
+    if (not $item->{published} =~ /^$strdate/) {
+      # If we have the published date, we're all good. If not, we need to
+      # distinguish between older and newer events.
+      # - If we do not find any entries matching the date because they're
+      #   all older, we're fine; we need to stop paginating.
+      # - If we do not find any entries matching the date because they're
+      #   all newer, we set $skipped (i.e. we need to continue paginating)
+      # - If a page contains older, matching and newer events, we can safely
+      #   set $skipped for newer events. The processing order will be from
+      #   newest to oldest, that is, one old event will overwrite $skipped.
+      my $published = $rfc_parser->parse_datetime($item->{published});
+      my $delta = $date->subtract_datetime($published);
+      if ($delta->is_negative()) {
+        # We found events newer than $date
+        $skipped = 1;
+      }
+      next;
+    }
+
     next unless $item->{object};
-    next unless $item->{published} =~ /^$date/;
     next unless $item->{object}{content} && $item->{object}{content} =~ /#metalmittwoch/;
     next unless $item->{object}{attachments} &&
       scalar @{ $item->{object}{attachments} };
@@ -144,7 +174,7 @@ sub filter_results {
     };
   }
 
-  return $entries;
+  return $entries, $skipped;
 }
 
 sub merge_timelines {
