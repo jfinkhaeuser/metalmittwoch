@@ -47,7 +47,8 @@ my $config = {
   api_token => "$FindBin::Bin/etc/api_token.dat",
   contributors => [
     '112287746325789895446', # jfinkhaeuser
-    'me',                    # eremit
+    '112251581633251844406', # eremit
+    '116270034687033665093', # josephine scott
   ]
 };
 
