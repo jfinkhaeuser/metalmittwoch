@@ -39,10 +39,6 @@ unless ($opts{i} && $opts{i} =~ /\d/) {
   exit;
 }
 
-unless ($opts{t}) {
-  say 'missing title/theme/topic';
-  exit;
-}
 
 # [configuration] -------------------------------------------------
 my $config = {
@@ -76,7 +72,12 @@ mkdir $mm_path unless -d $mm_path;
 open my $mmfile, '>', $mm_path . 'metalmittwoch';
 binmode $mmfile, ':utf8';
 
-print $mmfile sprintf "#metalmittwoch #%d (%s)\n", $opts{i}, $opts{t};
+if (exists $opts{t}) {
+  print $mmfile sprintf "#metalmittwoch #%02d (%s)\n", $opts{i}, $opts{t};
+}
+else {
+  print $mmfile sprintf "#metalmittwoch #%02d\n", $opts{i};
+}
 
 my $postno = 1;
 foreach my $post (sort { $a->{published} cmp $b->{published} } @{ $timelines }) {
