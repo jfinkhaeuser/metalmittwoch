@@ -92,7 +92,11 @@ else {
 }
 
 my $postno = 1;
+my $youtube = {};
 foreach my $post (sort { $a->{published} cmp $b->{published} } @{ $timelines }) {
+  # avoid double entries in the list
+  next if $youtube->{$post->{youtube}};
+  $youtube->{$post->{youtube}} = 1;
   print $mmfile sprintf "  %02d %s\n", $postno, $post->{title};
   $postno++;
 }
