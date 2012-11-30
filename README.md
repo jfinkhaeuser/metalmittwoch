@@ -55,6 +55,26 @@ extension should reflect the service type, and all newly added extensions must
 be documented in this README.md file.
 
 
+tags
+----
+
+To be considered part of #metalmittwoch events, a post **must** contain the
+`#metalmittwoch` tag. Other suggested, but not mandatory tags include:
+
+* #metal
+* #metaleveryday
+
+Some tags have special meaning. By default, the playlist generator (see issue #7)
+will ignore posts that have the #metalmittwoch tag but were not originally posted
+on a specific #metalmittwoch event day. That includes posts originally posted on
+non-#metalmittwoch event days, but also posts re-shared on #metalmittwoch where
+the tag is also re-shared.
+
+If you want to *force* the playlist generator to include a re-shared post, then
+you can also add the [#blutpogo](http://www.metalnews.de/cds/Teenage+Death+Explosion+-+The+Fire+Temples.7821.html)
+tag.
+
+
 proposed
 --------
 
