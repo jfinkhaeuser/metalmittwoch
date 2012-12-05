@@ -61,8 +61,8 @@ tags
 To be considered part of #metalmittwoch events, a post **must** contain the
 `#metalmittwoch` tag. Other suggested, but not mandatory tags include:
 
-* #metal
-* #metaleveryday
+* `#metal`
+* `#metaleveryday`
 
 Some tags have special meaning. By default, the playlist generator (see issue #7)
 will ignore posts that have the #metalmittwoch tag but were not originally posted
@@ -71,7 +71,7 @@ non-#metalmittwoch event days, but also posts re-shared on #metalmittwoch where
 the tag is also re-shared.
 
 If you want to *force* the playlist generator to include a re-shared post, then
-you can also add the [#blutpogo](http://www.metalnews.de/cds/Teenage+Death+Explosion+-+The+Fire+Temples.7821.html)
+you can also add the `[#blutpogo](http://www.metalnews.de/cds/Teenage+Death+Explosion+-+The+Fire+Temples.7821.html)`
 tag.
 
 
