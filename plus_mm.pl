@@ -62,6 +62,7 @@ my $timelines = [];
 my $nextPageToken = undef;
 my $result = undef;
 my $skipped = 0;
+my $processed = 0;
 do {
   if (defined $nextPageToken) {
     $result = $service->activities->search(body => { query => '#metalmittwoch', maxResults => 20, pageToken => $nextPageToken })->execute({auth_driver => $oauth2});
@@ -71,21 +72,26 @@ do {
   }
   $nextPageToken = $result->{nextPageToken};
 
-  ($result, $skipped) = filter_results($result->{items});
+  ($result, $skipped, my $p) = filter_results($result->{items});
+  $processed += $p;
   if (scalar @{ $result }) {
     push $timelines, $result;
   }
 } while (scalar @{ $result } || $skipped);
 
+say 'Found ', $processed, ' entries matching #metalmittwoch in total.';
+
 if (!defined $timelines || !scalar @{ $timelines }) {
-  die "Could not retrieve any posts";
+  die "Could not retrieve any posts for the given date";
 }
 
 $timelines = merge_timelines($timelines);
 
-if (!defined $timelines) {
-  die "No posts left after merging";
+if (!defined $timelines || !scalar @{ $timelines}) {
+  die "No entries left after merging";
 }
+
+say 'Found ', scalar @{ $timelines }, ' entries matching the current date.';
 
 # [output processing] ----------------------------------------------
 my $mm_path = $config->{playlist_dir} . '/' . $opts{d} . '/';
@@ -140,6 +146,7 @@ sub filter_results {
   my $entries = [];
 
   my $skipped = 0;
+  my $processed = 0;
 
   use DateTime;
   use DateTime::Format::RFC3339;
@@ -152,6 +159,8 @@ sub filter_results {
   my $rfc_parser = DateTime::Format::RFC3339->new;
 
   foreach my $item (@{ $results }) {
+    ++$processed;
+
     if (not $item->{published} =~ /^$strdate/) {
       # If we have the published date, we're all good. If not, we need to
       # distinguish between older and newer events.
@@ -187,7 +196,7 @@ sub filter_results {
     };
   }
 
-  return $entries, $skipped;
+  return $entries, $skipped, $processed;
 }
 
 sub merge_timelines {
