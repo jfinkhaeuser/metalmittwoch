@@ -18,6 +18,7 @@ use FindBin;
 use JSON;
 use Google::API::Client;
 use OAuth2::Client;
+use Data::Dumper;
 
 # [utf8 please] ----------------------------------------------------
 binmode STDOUT, ':utf8';
@@ -76,7 +77,15 @@ do {
   }
 } while (scalar @{ $result } || $skipped);
 
+if (!defined $timelines || !scalar @{ $timelines }) {
+  die "Could not retrieve any posts";
+}
+
 $timelines = merge_timelines($timelines);
+
+if (!defined $timelines) {
+  die "No posts left after merging";
+}
 
 # [output processing] ----------------------------------------------
 my $mm_path = $config->{playlist_dir} . '/' . $opts{d} . '/';
