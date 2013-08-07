@@ -13,8 +13,6 @@ The structure is quite simple:
 `metalmittwoch/[date]` contains the playlist for the *past* wednesday
 specified by the given date. The date format it `YYYY-MM-DD`.
 
-`proposed` contains songs proposed for future #metalmittwoch events.
-
 
 file formats
 ============
@@ -73,11 +71,3 @@ the tag is also re-shared.
 If you want to *force* the playlist generator to include a re-shared post, then
 you can also add the [`#blutpogo`](http://www.metalnews.de/cds/Teenage+Death+Explosion+-+The+Fire+Temples.7821.html)
 tag.
-
-
-proposed
---------
-
-The `proposed` file contains space indented "columns" for the artist, song title
-and a proposed YouTube URL to play. The artist and song title are mandatory in
-case the YouTube video gets taken down before the song can be played.
