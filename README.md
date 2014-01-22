@@ -5,6 +5,10 @@ Playlist for #metalmittwoch on Google+
 
 https://plus.google.com/s/%23metalmittwoch
 
+Other playlist formats (note they can be incomplete):
+
+  * http://www.last.fm/user/metalmittwoch/library/playlists
+
 
 structure
 =========
