@@ -54,7 +54,7 @@ def collect_data(path):
   return data
 
 
-def get_top(data, key, limit = 10):
+def get_extremes(data, key, limit = 10, top = True):
   items = {}
 
   # Get items and their counts
@@ -67,7 +67,8 @@ def get_top(data, key, limit = 10):
   # Sort the counts
   order = items.values()
   order.sort()
-  order.reverse()
+  if top:
+    order.reverse()
 
   top = []
   while len(top) < limit:
@@ -85,7 +86,7 @@ def get_top(data, key, limit = 10):
 
 def print_top_bands(data, limit = 10):
   # Get top bands
-  top = get_top(data, 'band', limit)
+  top = get_extremes(data, 'band', limit, True)
 
   # Print
   print "Top Bands"
@@ -99,7 +100,7 @@ def print_top_bands(data, limit = 10):
 
 def print_top_tracks(data, limit = 10):
   # Get top tracks
-  tmp = get_top(data, 'track', limit)
+  tmp = get_extremes(data, 'track', limit, True)
 
   # Get band for each top track
   top = []
