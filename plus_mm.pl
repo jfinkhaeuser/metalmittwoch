@@ -185,7 +185,8 @@ sub filter_results {
     next unless $item->{object}{attachments} &&
       scalar @{ $item->{object}{attachments} };
     # for simplicity we assume that there is always only ONE attachment
-    next unless $item->{object}{attachments}[0]{objectType} eq 'video' &&
+    my $valid = {'video' => 1, 'article' => 1};
+    next unless exists $valid->{$item->{object}{attachments}[0]{objectType}} &&
       $item->{object}{attachments}[0]{url} =~ /youtube\.com/;
 
     push @{ $entries }, {
