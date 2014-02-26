@@ -65,12 +65,14 @@ my $skipped = 0;
 my $processed = 0;
 do {
   if (defined $nextPageToken) {
-    $result = $service->activities->search(body => { query => '#metalmittwoch', maxResults => 20, pageToken => $nextPageToken })->execute({auth_driver => $oauth2});
+    $result = $service->activities->search(body => { query => '#metalmittwoch', 'orderBy' => 'recent', maxResults => 20, pageToken => $nextPageToken })->execute({auth_driver => $oauth2});
   }
   else {
-    $result = $service->activities->search(body => { query => '#metalmittwoch', maxResults => 20 })->execute({auth_driver => $oauth2});
+    $result = $service->activities->search(body => { query => '#metalmittwoch', 'orderBy' => 'recent', maxResults => 20 })->execute({auth_driver => $oauth2});
   }
   $nextPageToken = $result->{nextPageToken};
+
+# print Dumper($result);
 
   ($result, $skipped, my $p) = filter_results($result->{items});
   $processed += $p;
