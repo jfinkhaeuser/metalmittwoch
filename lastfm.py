@@ -183,7 +183,7 @@ def main():
 
   # Read last.fm config
   print "Reading last.fm config..."
-  configfile = os.path.join(basedir, 'last.fm')
+  configfile = os.path.join(basedir, 'etc', 'last.fm')
   config = read_config(configfile)
 
   # Generate playlists from local data
