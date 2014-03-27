@@ -5,6 +5,8 @@ Playlist for #metalmittwoch on Google+
 
 https://plus.google.com/s/%23metalmittwoch
 
+[![Build Status](https://travis-ci.org/jfinkhaeuser/metalmittwoch.svg?branch=master)](https://travis-ci.org/jfinkhaeuser/metalmittwoch)
+
 Other playlist formats (note they can be incomplete):
 
   * http://www.last.fm/user/metalmittwoch/library/playlists
