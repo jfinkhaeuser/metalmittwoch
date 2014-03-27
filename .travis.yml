@@ -1,6 +1,8 @@
 python:
-  - "2.7"
+- '2.7'
 perl:
-  - "5.14"
+- '5.14'
 script:
-  - "./lastfm.sh"
+- "./lastfm.sh"
+env:
+  secure: S+Ci3bFYfD6FvR0B5xY+/chkR4i/gKyqEX5f8tCOFX/SNFkYInZDOEjItAlf4SdjaDSHdOfzxLZHvD+k38w0i2B+v/V04jGQNSd38VlL740QcCdaBInMdA6u+b9TFlAIPxVQRETSQcnzYAYk9xqCLHVg6pS2yLpvBIq4ysaKRfo=

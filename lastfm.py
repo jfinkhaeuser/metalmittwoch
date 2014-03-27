@@ -85,12 +85,32 @@ def collect_data(path):
   return data
 
 
-def read_config(name):
-  import ConfigParser
-  config = ConfigParser.ConfigParser()
-  config.read(name)
+def get_config(name):
+  ret = None
 
-  return config
+  import os
+  if os.environ.has_key('LASTFM_CONFIG'):
+    config = os.environ['LASTFM_CONFIG']
+    config = config.split(':')
+
+    ret = {
+      'api_key': config[0],
+      'api_secret': config[1],
+      'username': config[2],
+      'password': config[3],
+    }
+  else:
+    import ConfigParser
+    config = ConfigParser.ConfigParser()
+    config.read(name)
+
+    ret = {
+      'api_key': config.get('last.fm', 'api_key'),
+      'api_secret': config.get('last.fm', 'api_secret'),
+      'username': config.get('last.fm', 'username'),
+      'password': config.get('last.fm', 'password'),
+    }
+  return ret
 
 
 def generate_playlists(data):
@@ -197,7 +217,7 @@ def main():
   # Read last.fm config
   print "Reading last.fm config..."
   configfile = os.path.join(basedir, 'etc', 'last.fm')
-  config = read_config(configfile)
+  config = get_config(configfile)
 
   # Generate playlists from local data
   print "Generating local playlists..."
@@ -206,12 +226,12 @@ def main():
   # Ok, connect to last.fm
   print "Connecting to last.fm..."
   import pylast
-  network  = pylast.LastFMNetwork(api_key = config.get('last.fm', 'api_key'),
-      api_secret = config.get('last.fm', 'api_secret'),
-      username = config.get('last.fm', 'username'),
-      password_hash = pylast.md5(config.get('last.fm', 'password')))
+  network  = pylast.LastFMNetwork(api_key = config['api_key'],
+      api_secret = config['api_secret'],
+      username = config['username'],
+      password_hash = pylast.md5(config['password']))
 
-  user = network.get_user(config.get('last.fm', 'username'))
+  user = network.get_user(config['username'])
 
   # Export playlists to last.fm
   print "Exporting playlists..."
