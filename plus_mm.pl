@@ -154,7 +154,7 @@ sub help {
 
 sub filter_results {
   my $results = shift;
-  return unless scalar @{ $results };
+  return [], 0, 0 unless scalar @{ $results };
 
   my $entries = [];
 
