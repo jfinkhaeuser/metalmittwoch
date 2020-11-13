@@ -75,5 +75,5 @@ non-#metalmittwoch event days, but also posts re-shared on #metalmittwoch where
 the tag is also re-shared.
 
 If you want to *force* the playlist generator to include a re-shared post, then
-you can also add the [`#blutpogo`](http://www.metalnews.de/cds/Teenage+Death+Explosion+-+The+Fire+Temples.7821.html)
+you can also add the [`#blutpogo`](https://www.metalnews.de/teenage-deathexplosion-the-fire-temples/)
 tag.
